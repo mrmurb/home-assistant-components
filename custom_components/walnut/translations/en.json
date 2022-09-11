@@ -1,0 +1,13 @@
+{
+    "config": {
+        "abort": {
+            "no_devices_found": "There aren't any unconfigured Walnut Bluetooth devices nearby."
+        },
+        "step": {
+            "bluetooth_confirm": {
+                "description": "Do you want to add the Walnut Bluetooth device `{name}` to Home Assistant?",
+                "title": "Discovered Walnut Bluetooth device"
+            }
+        }
+    }
+}
