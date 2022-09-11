@@ -4,11 +4,11 @@
   "version": "0.1.0",
   "config_flow": true,
   "documentation": "https://www.home-assistant.io/integrations/walnut",
-  "requirements": [],
+  "requirements": ["bluetooth"],
   "ssdp": [],
   "zeroconf": [],
   "homekit": {},
-  "dependencies": ["bluetooth"],
+  "dependencies": [],
   "codeowners": [
     "@mrmurb"
   ],
