@@ -1,12 +1,20 @@
+from uuid import UUID
+
+from bleak.backends.device import BLEDevice
+from bleak import BleakClient
+
+BATTERY_CHARACTERISTIC_UUID = UUID("00002a19-0000-1000-8000-00805f9b34fb")
+
 class Walnut:
-    _address: str
+    _device: BLEDevice
     _manufacturer_data: dict[int, bytes]
 
     _temperature: float
     _humidity: float
+    _battery: int
 
-    def __init__(self, address: str) -> None:
-        self._address = address
+    def __init__(self, device: BLEDevice) -> None:
+        self._device = device
         self._manufacturer_data = {}
 
     def _parse_manufacturer_data(self) -> None:
@@ -27,15 +35,19 @@ class Walnut:
 
             idx += 4
 
-    def update_manufacturer_data(self, manufacturer_data: dict[int, bytes]) -> None:
+    def update_device(self, device: BLEDevice, manufacturer_data: dict[int, bytes]) -> None:
+        self._device = device
         self._manufacturer_data = manufacturer_data
 
-    def fetch_values(self) -> None:
+    async def fetch_values(self) -> None:
+        async with BleakClient(self._device) as client:
+            bat_char = await client.read_gatt_char(BATTERY_CHARACTERISTIC_UUID)
+            self._battery = ord(bat_char)
         self._parse_manufacturer_data()
 
     @property
     def address(self) -> str:
-        return self._address
+        return self._device.address
 
     @property
     def temperature(self) -> float:
@@ -44,3 +56,11 @@ class Walnut:
     @property
     def humidity(self) -> float:
         return self._humidity
+
+    @property
+    def rssi(self) -> int:
+        return self._device.rssi
+
+    @property
+    def battery(self) -> int:
+        return self._battery

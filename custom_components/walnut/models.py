@@ -20,7 +20,7 @@ class WalnutDataUpdateCoordinator(DataUpdateCoordinator[Walnut]):
         super().__init__(hass, _LOGGER, name="Walnut Bluetooth", update_interval=timedelta(minutes=1))
 
     async def _async_update_data(self):
-        self._device.fetch_values()
+        await self._device.fetch_values()
         return self._device
 
 class WalnutBaseEntity(CoordinatorEntity[WalnutDataUpdateCoordinator]):

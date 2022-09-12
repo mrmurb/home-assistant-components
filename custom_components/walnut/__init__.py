@@ -1,6 +1,5 @@
 """The Walnut integration."""
 from __future__ import annotations
-import logging
 
 from homeassistant.components.bluetooth import (
     async_ble_device_from_address,
@@ -19,8 +18,6 @@ from .models import WalnutDataUpdateCoordinator
 
 PLATFORMS: list[Platform] = [Platform.SENSOR]
 
-_LOGGER = logging.getLogger(__name__)
-
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Walnut from a config entry."""
 
@@ -33,13 +30,13 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             f"Couldn't find a nearby device for address: {entry.data[CONF_ADDRESS]}"
         )
 
-    device = Walnut(ble_device.address)
+    device = Walnut(ble_device)
 
     @callback
     def _async_update_ble(service_info: BluetoothServiceInfoBleak, change: BluetoothChange) -> None:
         if change != BluetoothChange.ADVERTISEMENT:
             return
-        device.update_manufacturer_data(service_info.manufacturer_data)
+        device.update_device(service_info.device, service_info.manufacturer_data)
 
     async_register_callback(
         hass,
